@@ -1,0 +1,19 @@
+modules:
+  confluence:globalSettings:
+    - key: learning-and-development-hello-world-content-byline-item
+      resource: main
+      resolver:
+        function: resolver
+      title: Learning and Development Portal
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: static/hello-world/build
+app:
+  runtime:
+    name: nodejs22.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/33222989-f8e3-4487-a791-7df0b8f39c3e
