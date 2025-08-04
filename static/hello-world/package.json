@@ -4,10 +4,17 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "@forge/api": "^3.0.0",
+    "@forge/resolver": "^1.5.0",
+    "@atlaskit/button": "^13.3.0",
     "@atlaskit/css-reset": "^6.6.2",
+    "@atlaskit/modal-dialog": "^12.4.0",
+    "@atlaskit/radio": "^8.1.7",
+    "@atlaskit/select": "^11.0.14",
     "@forge/bridge": "5.2.0",
     "react": "^16",
-    "react-dom": "^16"
+    "react-dom": "^16",
+    "styled-components": "^5.3.11"
   },
   "devDependencies": {
     "react-scripts": "^5.0.1"

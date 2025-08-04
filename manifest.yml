@@ -17,3 +17,10 @@ app:
     memoryMB: 256
     architecture: arm64
   id: ari:cloud:ecosystem::app/33222989-f8e3-4487-a791-7df0b8f39c3e
+permissions:
+  scopes:
+    - storage:app
+    - read:confluence-user
+    - read:confluence-groups
+    - read:content-details:confluence
+    - read:space:confluence
