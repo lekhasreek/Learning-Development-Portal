@@ -229,21 +229,6 @@ function App() {
             <div className="dropdown-section">
               <label>{assignType === 'users' ? 'Users*' : 'Groups*'}</label>
               
-              {/* API Test Status */}
-              {apiTestResult && (
-                <div style={{ 
-                  background: apiTestResult.success ? '#d4edda' : '#f8d7da', 
-                  border: `1px solid ${apiTestResult.success ? '#c3e6cb' : '#f5c6cb'}`,
-                  borderRadius: '4px',
-                  padding: '8px',
-                  marginBottom: '8px',
-                  fontSize: '0.8rem'
-                }}>
-                  <strong>API Status:</strong> {apiTestResult.success ? '✅ Connected' : '❌ Connection Issues'}
-                  {apiTestResult.error && <div style={{color: 'red'}}>Error: {apiTestResult.error}</div>}
-                </div>
-              )}
-              
               <input
                 type="text"
                 placeholder={`Search ${assignType}... (min 2 characters)`}
