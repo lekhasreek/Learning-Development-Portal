@@ -4,7 +4,11 @@ import { storage } from '@forge/api';
 import api, { route } from '@forge/api';
 
 const resolver = new Resolver();
-
+resolver.define('get-current-accountId', (req) => {
+  return {
+    accountId: req.context.accountId,
+  };
+});
 // Fixed searchUsers function with correct CQL fields and multiple fallback approaches
 resolver.define('searchUsers', async ({ payload }) => {
   const { query } = payload;

@@ -1,3 +1,9 @@
+.welcome {
+  font-size: 2rem;
+  margin-bottom: 0.2rem;
+  color: #333;
+}
+
 /* Apply to both sections for consistency */
 .section-container,
 .section-container-course {
@@ -116,7 +122,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .modal {
@@ -126,6 +132,7 @@
   width: 500px;
   max-width: 90%;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  z-index: 10000;
 }
 
 .radio-group {

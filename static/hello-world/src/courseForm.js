@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import './CourseForm.css';
 
-function CourseForm({ onAddCourse }) {
+function CourseForm({ onAddCourse, onCancel }) {
   const [form, setForm] = useState({
     title: '',
     imageFile: null,
     imagePreview: '',
     description: '',
     atlassianUrl: '',
-    level: 'L1',
+    level: 'Beginner',
     product: '' // New field
   });
 
@@ -84,7 +84,7 @@ function CourseForm({ onAddCourse }) {
         imagePreview: '',
         description: '',
         atlassianUrl: '',
-        level: 'L1',
+        level: 'Beginner',
         product: ''
       });
     } catch (error) {
@@ -129,9 +129,9 @@ function CourseForm({ onAddCourse }) {
       <div className="form-row">
         <label>Level:</label>
         <select name="level" value={form.level} onChange={handleChange} required>
-          <option value="L1">L1</option>
-          <option value="L2">L2</option>
-          <option value="L3">L3</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
         </select>
       </div>
 
@@ -141,12 +141,17 @@ function CourseForm({ onAddCourse }) {
           <option value="">Select...</option>
           <option value="Jira">Jira</option>
           <option value="Confluence">Confluence</option>
-          <option value="Marketplace Apps">Marketplace Apps</option>
+          <option value="Marketplace apps">Marketplace apps</option>
           <option value="Other">Other</option>
         </select>
       </div>
 
-      <button type="submit">Add Course</button>
+      <div style={{ display: 'flex', gap: '12px', marginTop: '18px' }}>
+        <button type="submit">Add Course</button>
+        {onCancel && (
+          <button type="button" onClick={onCancel} style={{ background: '#ccc', color: '#222' }}>Cancel</button>
+        )}
+      </div>
     </form>
   );
 }
