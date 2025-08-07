@@ -23,11 +23,20 @@ function App() {
   const [showCatalog, setShowCatalog] = useState(false);
   const [productFilter, setProductFilter] = useState('All');
   const [levelFilter, setLevelFilter] = useState('All');
+  // Track assignments: { userId: [courseTitle, ...] }
+  const [assignments, setAssignments] = useState(() => {
+    try {
+      const stored = localStorage.getItem('courseAssignments');
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
 
   // Map displayName to userLevel (Beginner/Intermediate/Advanced)
   const userLevels = {
     'Narmadha B': 'Intermediate',
-    'Lekha Sree K': 'Advanced',
+    'Lekha Sree K': 'Beginner',
     'Jane Smith': 'Beginner',
   };
   // Helper to get numeric order for levels
@@ -105,6 +114,23 @@ function App() {
   };
 
   const handleAssign = () => {
+    // For each selected user, add selected courses to their assignments
+    setAssignments(prev => {
+      const updated = { ...prev };
+      selectedUsers.forEach(userId => {
+        if (!updated[userId]) updated[userId] = [];
+        selectedCourses.forEach(courseTitle => {
+          if (!updated[userId].includes(courseTitle)) {
+            updated[userId].push(courseTitle);
+          }
+        });
+      });
+      // Persist to localStorage
+      try {
+        localStorage.setItem('courseAssignments', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
     alert(`Assigned ${selectedCourses.length} course(s) to ${selectedUsers.length} ${assignType}`);
     setShowAssignModal(false);
     setSelectedCourses([]);
@@ -112,6 +138,19 @@ function App() {
     setUsers([]);
     setSearchQuery('');
   };
+  // Keep assignments in sync with localStorage if changed elsewhere
+  useEffect(() => {
+    const syncAssignments = () => {
+      try {
+        const stored = localStorage.getItem('courseAssignments');
+        if (stored) {
+          setAssignments(JSON.parse(stored));
+        }
+      } catch {}
+    };
+    window.addEventListener('storage', syncAssignments);
+    return () => window.removeEventListener('storage', syncAssignments);
+  }, []);
 
   const handleUserSearch = async (query) => {
     setSearchQuery(query);
@@ -186,6 +225,9 @@ function App() {
       return level;
     };
 
+    // Get current userId (from user object)
+    const currentUserId = user && (user.accountId || user.id || user.email || user.displayName);
+
     const filteredCourses = courses.filter(course => {
       const productMatch = productFilter === 'All' || (course.product && course.product.trim().toLowerCase() === productFilter.trim().toLowerCase());
       const displayLevel = getDisplayLevel(course.level);
@@ -195,9 +237,14 @@ function App() {
       // Lock if course level is above user level (user can access only their level and below)
       const courseLevelOrder = levelOrder[getDisplayLevel(course.level)] || 1;
       const userLevelOrder = levelOrder[userLevel] || 1;
+      let isLocked = courseLevelOrder > userLevelOrder;
+      // Unlock if assigned to this user
+      if (currentUserId && assignments[currentUserId] && assignments[currentUserId].includes(course.title)) {
+        isLocked = false;
+      }
       return {
         ...course,
-        isLocked: courseLevelOrder > userLevelOrder // lock if course is above user
+        isLocked
       };
     });
     return (
@@ -226,6 +273,9 @@ function App() {
                 <div style={{ margin: '10px 0', color: '#344563' }}>Level: <span style={{ fontWeight: 'bold' }}>{getDisplayLevel(course.level)}</span></div>
                 <button style={{ background: course.isLocked ? '#ccc' : '#36B37E', color: 'white', border: 'none', borderRadius: '6px', padding: '8px 18px', fontWeight: 'bold', marginTop: '10px', cursor: course.isLocked ? 'not-allowed' : 'pointer' }} disabled={course.isLocked}>Start</button>
                 {course.isLocked && <div style={{ color: 'red', marginTop: '8px' }}>Locked: Higher level</div>}
+                {!course.isLocked && assignments[currentUserId] && assignments[currentUserId].includes(course.title) && (
+                  <div style={{ color: '#36B37E', marginTop: '8px' }}>Unlocked by assignment</div>
+                )}
               </div>
               <div style={{ width: '220px', height: '120px', background: '#0052CC', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.1rem' }}>{course.title}</div>
             </div>
@@ -281,7 +331,13 @@ function App() {
             };
             const courseLevelOrder = levelOrder[getDisplayLevel(course.level)] || 1;
             const userLevelOrder = levelOrder[userLevel] || 1;
-            const isLocked = courseLevelOrder > userLevelOrder;
+            // Get current userId (from user object)
+            const currentUserId = user && (user.accountId || user.id || user.email || user.displayName);
+            let isLocked = courseLevelOrder > userLevelOrder;
+            // Unlock if assigned to this user
+            if (currentUserId && assignments[currentUserId] && assignments[currentUserId].includes(course.title)) {
+              isLocked = false;
+            }
             return <CourseCard key={index} course={course} isLocked={isLocked} />;
           })
         ) : (
