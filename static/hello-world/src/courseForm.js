@@ -13,8 +13,16 @@ function CourseForm({ onAddCourse, onCancel }) {
   });
 
   const isValidUrl = (url) => {
-    const pattern = /^https:\/\/university\.atlassian\.com\/student\/(path|activity)\/[a-zA-Z0-9-]+/;
-    return pattern.test(url);
+    // Accepts:
+    // https://community.atlassian.com/learning/collection/topic/slug
+    // https://community.atlassian.com/learning/course/slug
+    // https://university.atlassian.com/student/page/1568719-advanced-asset-management-in-jira-service-management-live-team-training
+    const patterns = [
+      /^https:\/\/community\.atlassian\.com\/learning\/collection\/topic\/[a-zA-Z0-9-]+$/,
+      /^https:\/\/community\.atlassian\.com\/learning\/course\/[a-zA-Z0-9-]+$/,
+      /^https:\/\/university\.atlassian\.com\/student\/page\/[a-zA-Z0-9-]+$/
+    ];
+    return patterns.some((pattern) => pattern.test(url));
   };
 
   const handleChange = (e) => {

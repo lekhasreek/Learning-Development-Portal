@@ -24,6 +24,24 @@ function App() {
   const [productFilter, setProductFilter] = useState('All');
   const [levelFilter, setLevelFilter] = useState('All');
 
+  // Map displayName to userLevel (Beginner/Intermediate/Advanced)
+  const userLevels = {
+    'Narmadha B': 'Intermediate',
+    'Lekha Sree K': 'Advanced',
+    'Jane Smith': 'Beginner',
+  };
+  // Helper to get numeric order for levels
+  const levelOrder = {
+    'Beginner': 1,
+    'Intermediate': 2,
+    'Advanced': 3,
+    'L1': 1,
+    'L2': 2,
+    'L3': 3
+  };
+
+  const [userLevel, setUserLevel] = useState('Beginner');
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -34,6 +52,9 @@ function App() {
         if (!response.ok) throw new Error(`Failed to fetch user info: ${response.status}`);
         const userData = await response.json();
         setUser(userData);
+        // Map displayName to userLevel
+        const mappedLevel = userLevels[userData.displayName] || 'Beginner';
+        setUserLevel(mappedLevel);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -170,6 +191,14 @@ function App() {
       const displayLevel = getDisplayLevel(course.level);
       const levelMatch = levelFilter === 'All' || (displayLevel && displayLevel.trim().toLowerCase() === levelFilter.trim().toLowerCase());
       return productMatch && levelMatch;
+    }).map(course => {
+      // Lock if course level is above user level (user can access only their level and below)
+      const courseLevelOrder = levelOrder[getDisplayLevel(course.level)] || 1;
+      const userLevelOrder = levelOrder[userLevel] || 1;
+      return {
+        ...course,
+        isLocked: courseLevelOrder > userLevelOrder // lock if course is above user
+      };
     });
     return (
       <div style={{ padding: '40px' }}>
@@ -191,11 +220,12 @@ function App() {
         </div>
         <div>
           {filteredCourses.map(course => (
-            <div key={course.id} style={{ display: 'flex', alignItems: 'center', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', marginBottom: '30px', padding: '30px' }}>
+            <div key={course.id} style={{ display: 'flex', alignItems: 'center', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', marginBottom: '30px', padding: '30px', opacity: course.isLocked ? 0.5 : 1 }}>
               <div style={{ flex: 1 }}>
                 <span style={{ fontSize: '1.3rem', fontWeight: '600' }}>{course.title}</span>
                 <div style={{ margin: '10px 0', color: '#344563' }}>Level: <span style={{ fontWeight: 'bold' }}>{getDisplayLevel(course.level)}</span></div>
-                <button style={{ background: '#36B37E', color: 'white', border: 'none', borderRadius: '6px', padding: '8px 18px', fontWeight: 'bold', marginTop: '10px', cursor: 'pointer' }}>Start</button>
+                <button style={{ background: course.isLocked ? '#ccc' : '#36B37E', color: 'white', border: 'none', borderRadius: '6px', padding: '8px 18px', fontWeight: 'bold', marginTop: '10px', cursor: course.isLocked ? 'not-allowed' : 'pointer' }} disabled={course.isLocked}>Start</button>
+                {course.isLocked && <div style={{ color: 'red', marginTop: '8px' }}>Locked: Higher level</div>}
               </div>
               <div style={{ width: '220px', height: '120px', background: '#0052CC', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.1rem' }}>{course.title}</div>
             </div>
@@ -241,7 +271,19 @@ function App() {
       <h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Your Courses</h2>
       <div className="course-container">
         {courses.length > 0 ? (
-          courses.map((course, index) => <CourseCard key={index} course={course} />)
+          courses.map((course, index) => {
+            // Determine lock for each course for the "Your Courses" section
+            const getDisplayLevel = (level) => {
+              if (level === 'L1') return 'Beginner';
+              if (level === 'L2') return 'Intermediate';
+              if (level === 'L3') return 'Advanced';
+              return level;
+            };
+            const courseLevelOrder = levelOrder[getDisplayLevel(course.level)] || 1;
+            const userLevelOrder = levelOrder[userLevel] || 1;
+            const isLocked = courseLevelOrder > userLevelOrder;
+            return <CourseCard key={index} course={course} isLocked={isLocked} />;
+          })
         ) : (
           <p style={{ textAlign: 'center', marginTop: '1rem' }}>No courses added yet.</p>
         )}
