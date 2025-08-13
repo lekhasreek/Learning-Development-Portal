@@ -102,65 +102,77 @@ function CourseForm({ onAddCourse, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="image-upload-preview">
-        {form.imagePreview ? (
-          <img src={form.imagePreview} alt="Course Thumbnail" className="thumbnail" />
-        ) : (
-          <div className="thumbnail-placeholder" />
-        )}
-        <input
-          type="file"
-          accept="image/*"
-          id="course-thumbnail"
-          onChange={handleImageChange}
-          hidden
-        />
-        <label htmlFor="course-thumbnail" className="upload-button">Upload course thumbnail</label>
-      </div>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+      <form onSubmit={handleSubmit} style={{ width: '400px', background: '#fff', padding: '32px', borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '18px' }}>
+          <button
+            type="button"
+            onClick={onCancel}
+            style={{ background: 'none', border: 'none', color: '#0052CC', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', marginRight: '12px' }}
+          >
+            ← Back
+          </button>
+          <h2 style={{ margin: 0, fontSize: '1.3rem', fontWeight: '600' }}>Add New Course</h2>
+        </div>
+        <div className="image-upload-preview">
+          {form.imagePreview ? (
+            <img src={form.imagePreview} alt="Course Thumbnail" className="thumbnail" />
+          ) : (
+            <div className="thumbnail-placeholder" />
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            id="course-thumbnail"
+            onChange={handleImageChange}
+            hidden
+          />
+          <label htmlFor="course-thumbnail" className="upload-button">Upload course thumbnail</label>
+        </div>
 
-      <div className="form-row">
-        <label>Course Title:</label>
-        <input type="text" name="title" value={form.title} onChange={handleChange} required />
-      </div>
+        <div className="form-row">
+          <label>Course Title:</label>
+          <input type="text" name="title" value={form.title} onChange={handleChange} required />
+        </div>
 
-      <div className="form-row">
-        <label>Course Description:</label>
-        <textarea name="description" value={form.description} onChange={handleChange} required />
-      </div>
+        <div className="form-row">
+          <label>Course Description:</label>
+          <textarea name="description" value={form.description} onChange={handleChange} required />
+        </div>
 
-      <div className="form-row">
-        <label>Atlassian URL:</label>
-        <input type="text" name="atlassianUrl" value={form.atlassianUrl} onChange={handleChange} required />
-      </div>
+        <div className="form-row">
+          <label>Atlassian URL:</label>
+          <input type="text" name="atlassianUrl" value={form.atlassianUrl} onChange={handleChange} required />
+        </div>
 
-      <div className="form-row">
-        <label>Level:</label>
-        <select name="level" value={form.level} onChange={handleChange} required>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
-      </div>
+        <div className="form-row">
+          <label>Level:</label>
+          <select name="level" value={form.level} onChange={handleChange} required>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
 
-      <div className="form-row">
-        <label>Product:</label>
-        <select name="product" value={form.product} onChange={handleChange} required>
-          <option value="">Select...</option>
-          <option value="Jira">Jira</option>
-          <option value="Confluence">Confluence</option>
-          <option value="Marketplace apps">Marketplace apps</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
+        <div className="form-row">
+          <label>Product:</label>
+          <select name="product" value={form.product} onChange={handleChange} required>
+            <option value="">Select...</option>
+            <option value="Jira">Jira</option>
+            <option value="Confluence">Confluence</option>
+            <option value="Marketplace apps">Marketplace apps</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-      <div style={{ display: 'flex', gap: '12px', marginTop: '18px' }}>
-        <button type="submit">Add Course</button>
-        {onCancel && (
-          <button type="button" onClick={onCancel} style={{ background: '#ccc', color: '#222' }}>Cancel</button>
-        )}
-      </div>
-    </form>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '18px', justifyContent: 'center' }}>
+          <button type="submit">Add Course</button>
+          {onCancel && (
+            <button type="button" onClick={onCancel} style={{ background: '#ccc', color: '#222' }}>Cancel</button>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }
 

@@ -318,28 +318,12 @@ function App() {
         </div>
       </div>
 
-      <h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Your Courses</h2>
+      <h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Recommended Courses</h2>
       <div className="course-container">
         {courses.length > 0 ? (
-          courses.map((course, index) => {
-            // Determine lock for each course for the "Your Courses" section
-            const getDisplayLevel = (level) => {
-              if (level === 'L1') return 'Beginner';
-              if (level === 'L2') return 'Intermediate';
-              if (level === 'L3') return 'Advanced';
-              return level;
-            };
-            const courseLevelOrder = levelOrder[getDisplayLevel(course.level)] || 1;
-            const userLevelOrder = levelOrder[userLevel] || 1;
-            // Get current userId (from user object)
-            const currentUserId = user && (user.accountId || user.id || user.email || user.displayName);
-            let isLocked = courseLevelOrder > userLevelOrder;
-            // Unlock if assigned to this user
-            if (currentUserId && assignments[currentUserId] && assignments[currentUserId].includes(course.title)) {
-              isLocked = false;
-            }
-            return <CourseCard key={index} course={course} isLocked={isLocked} />;
-          })
+          courses.map((course, index) => (
+            <CourseCard key={index} course={course} minimal />
+          ))
         ) : (
           <p style={{ textAlign: 'center', marginTop: '1rem' }}>No courses added yet.</p>
         )}

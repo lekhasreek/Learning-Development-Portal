@@ -2,16 +2,12 @@ import React from 'react';
 import './CourseCard.css';
 import { router } from '@forge/bridge';
 
-function CourseCard({ course, isLocked }) {
+function CourseCard({ course, isLocked, minimal }) {
   const { title, imageBase64, description, atlassianUrl, level, product } = course;
 
-  const handleCardClick = async () => {
-    if (isLocked) return;
-    try {
-      await router.navigate(atlassianUrl);
-    } catch (error) {
-      console.error('Navigation failed:', error);
-    }
+  const handleCardClick = () => {
+    if (!atlassianUrl) return;
+    window.open(atlassianUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Map L1/L2/L3 to Beginner/Intermediate/Advanced for legacy data
@@ -21,30 +17,34 @@ function CourseCard({ course, isLocked }) {
     level === 'L3' ? 'Advanced' :
     level;
 
-  return (
-    <div className="course-card" onClick={handleCardClick} style={{ opacity: isLocked ? 0.5 : 1, cursor: isLocked ? 'not-allowed' : 'pointer', position: 'relative' }}>
-      {imageBase64 && (
-        <img
-          src={imageBase64}
-          alt="Course Thumbnail"
-          className="course-image"
-        />
-      )}
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <p><strong>Level:</strong> {displayLevel}</p>
-      <p><strong>Product:</strong> {product}</p>
-      <div style={{ marginTop: '12px', minHeight: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {isLocked ? (
-          <span className="lock-label" title="Locked" style={{ color: 'red', fontWeight: 'bold', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span role="img" aria-label="locked">🔒</span> Locked
-          </span>
-        ) : (
-          <span className="course-link" style={{ color: '#0052CC', fontWeight: 'bold', fontSize: '1.05rem' }}>Go to Course →</span>
+  if (minimal) {
+    // Minimal card: only image and name, smaller size, entire card clickable
+    return (
+      <div
+        className="course-card"
+        style={{ width: '180px', padding: '12px', borderRadius: '8px', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', background: '#fff', cursor: 'pointer' }}
+        onClick={() => atlassianUrl && router.open(atlassianUrl)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={e => {
+          if (atlassianUrl && (e.key === 'Enter' || e.key === ' ')) {
+            router.open(atlassianUrl);
+          }
+        }}
+      >
+        {imageBase64 && (
+          <img
+            src={imageBase64}
+            alt="Course Thumbnail"
+            style={{ width: '100%', height: '90px', objectFit: 'cover', borderRadius: '6px', marginBottom: '8px' }}
+          />
         )}
+        <h4 style={{ fontSize: '1rem', fontWeight: '600', margin: 0 }}>{title}</h4>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // ...existing code for full card (if needed)...
 }
 
 export default CourseCard;
