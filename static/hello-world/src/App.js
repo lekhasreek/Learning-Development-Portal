@@ -210,8 +210,17 @@ function App() {
   if (showForm) {
     return (
       <div>
-        <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>Add New Course</h1>
-        <CourseForm onAddCourse={handleAddCourse} onCancel={() => setShowForm(false)} />
+        {/* Back button outside the box, top left */}
+        <div style={{ position: 'absolute', top: 30, left: 30 }}>
+          <button style={{ background: 'none', border: 'none', color: '#0052CC', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer' }} onClick={() => setShowForm(false)}>
+            &larr; Back
+          </button>
+        </div>
+        {/* Main course form box without duplicate heading */}
+        <div style={{ marginTop: '60px' }}>
+          <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>Add New Course</h1>
+          <CourseForm onAddCourse={handleAddCourse} onCancel={() => setShowForm(false)} />
+        </div>
       </div>
     );
   }
@@ -271,7 +280,18 @@ function App() {
               <div style={{ flex: 1 }}>
                 <span style={{ fontSize: '1.3rem', fontWeight: '600' }}>{course.title}</span>
                 <div style={{ margin: '10px 0', color: '#344563' }}>Level: <span style={{ fontWeight: 'bold' }}>{getDisplayLevel(course.level)}</span></div>
-                <button style={{ background: course.isLocked ? '#ccc' : '#36B37E', color: 'white', border: 'none', borderRadius: '6px', padding: '8px 18px', fontWeight: 'bold', marginTop: '10px', cursor: course.isLocked ? 'not-allowed' : 'pointer' }} disabled={course.isLocked}>Start</button>
+                <button
+                  style={{ background: course.isLocked ? '#ccc' : '#36B37E', color: 'white', border: 'none', borderRadius: '6px', padding: '8px 18px', fontWeight: 'bold', marginTop: '10px', cursor: course.isLocked ? 'not-allowed' : 'pointer' }}
+                  disabled={course.isLocked}
+                  onClick={() => {
+                    if (!course.isLocked && course.atlassianUrl) {
+                      // Use router.open for navigation
+                      require('@forge/bridge').router.open(course.atlassianUrl);
+                    }
+                  }}
+                >
+                  Start
+                </button>
                 {course.isLocked && <div style={{ color: 'red', marginTop: '8px' }}>Locked: Higher level</div>}
                 {!course.isLocked && assignments[currentUserId] && assignments[currentUserId].includes(course.title) && (
                   <div style={{ color: '#36B37E', marginTop: '8px' }}>Unlocked by assignment</div>
@@ -357,7 +377,7 @@ function App() {
 
             <div className="dropdown-section">
               <label>{assignType === 'users' ? 'Users*' : 'Groups*'}</label>
-              <input type="text" placeholder={`Search ${assignType}... (min 2 characters)`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
               {isSearching && <div>🔍 Searching...</div>}
               {searchError && <div style={{ color: 'red' }}>⚠️ {searchError}</div>}
               <select multiple value={selectedUsers} onChange={(e) => setSelectedUsers([...e.target.selectedOptions].map(o => o.value))}>

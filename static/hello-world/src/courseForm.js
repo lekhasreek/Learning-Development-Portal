@@ -104,16 +104,6 @@ function CourseForm({ onAddCourse, onCancel }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
       <form onSubmit={handleSubmit} style={{ width: '400px', background: '#fff', padding: '32px', borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '18px' }}>
-          <button
-            type="button"
-            onClick={onCancel}
-            style={{ background: 'none', border: 'none', color: '#0052CC', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', marginRight: '12px' }}
-          >
-            ← Back
-          </button>
-          <h2 style={{ margin: 0, fontSize: '1.3rem', fontWeight: '600' }}>Add New Course</h2>
-        </div>
         <div className="image-upload-preview">
           {form.imagePreview ? (
             <img src={form.imagePreview} alt="Course Thumbnail" className="thumbnail" />
