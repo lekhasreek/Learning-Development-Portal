@@ -35,7 +35,7 @@ function App() {
 
   // Map displayName to userLevel (Beginner/Intermediate/Advanced)
   const userLevels = {
-    'Narmadha B': 'Intermediate',
+    'Narmadha B': 'Beginner',
     'Lekha Sree K': 'Beginner',
     'Jane Smith': 'Beginner',
   };
@@ -212,8 +212,21 @@ function App() {
       <div>
         {/* Back button outside the box, top left */}
         <div style={{ position: 'absolute', top: 30, left: 30 }}>
-          <button style={{ background: 'none', border: 'none', color: '#0052CC', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer' }} onClick={() => setShowForm(false)}>
-            &larr; Back
+          <button
+            style={{
+              background: '#0052CC',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '12px 28px',
+              cursor: 'pointer',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
+            }}
+            onClick={() => setShowForm(false)}
+          >
+            Back
           </button>
         </div>
         {/* Main course form box without duplicate heading */}
@@ -320,23 +333,25 @@ function App() {
         </div>
       </div>
 
-      <div className="section-container-course">
-        <div className="course-card" onClick={() => { console.log('Add course clicked'); setShowForm(true); }} style={{ cursor: 'pointer', zIndex: 1000 }}>
-          <div className="course-icon">
-            <img src="addcourse.png" alt="Add course icon" />
+      {user && user.displayName === 'Lekha Sree K' && (
+        <div className="section-container-course">
+          <div className="course-card" onClick={() => { console.log('Add course clicked'); setShowForm(true); }} style={{ cursor: 'pointer', zIndex: 1000 }}>
+            <div className="course-icon">
+              <img src="addcourse.png" alt="Add course icon" />
+            </div>
+            <h3>Add a new course</h3>
+            <p>Add a custom course to the catalog, tailored to your organization.</p>
           </div>
-          <h3>Add a new course</h3>
-          <p>Add a custom course to the catalog, tailored to your organization.</p>
-        </div>
 
-        <div className="course-card" onClick={() => setShowAssignModal(true)} style={{ cursor: 'pointer' }}>
-          <div className="course-icon">
-            <img src="assigncourse.png" alt="Assign course icon" />
+          <div className="course-card" onClick={() => setShowAssignModal(true)} style={{ cursor: 'pointer' }}>
+            <div className="course-icon">
+              <img src="assigncourse.png" alt="Assign course icon" />
+            </div>
+            <h3>Assign courses to users</h3>
+            <p>Be sure your learners complete important courses by assigning them to people in your org.</p>
           </div>
-          <h3>Assign courses to users</h3>
-          <p>Be sure your learners complete important courses by assigning them to people in your org.</p>
         </div>
-      </div>
+      )}
 
       <h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Recommended Courses</h2>
       <div className="course-container">
